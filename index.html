@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Digital Scientific Calculator</title>
+    <link href="https://fonts.googleapis.com/css?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .digital-calc {
+            background: #181a1b;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px #00ffe766, 0 1.5px 0 #00ffe7 inset;
+            padding: 32px 28px 24px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .digital-calc h2 {
+            color: #00ffe7;
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px #00ffe7;
+            margin-bottom: 24px;
+        }
+        .display {
+            width: 260px;
+            background: #232526;
+            color: #00ffe7;
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            padding: 12px 18px;
+            text-align: right;
+            box-shadow: 0 1px 4px #00ffe733;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 56px);
+            gap: 10px;
+        }
+        .digital-calc button {
+            background: #00ffe7;
+            color: #181a1b;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            padding: 14px 0;
+            transition: background 0.2s;
+        }
+        .digital-calc button:hover {
+            background: #00bfae;
+        }
+        .digital-calc #result {
+            margin-top: 20px;
+            color: #00ffe7;
+            font-size: 1.5em;
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            text-shadow: 0 2px 8px #00ffe7;
+            min-height: 1.5em;
+        }
+        .span-2 { grid-column: span 2; }
+        .span-3 { grid-column: span 3; }
+    </style>
+</head>
+<body>
+    <div class="digital-calc">
+        <h2>Digital Scientific Calculator</h2>
+        <input id="display" class="display" type="text" readonly>
+        <div class="buttons">
+            <button onclick="press('7')">7</button>
+            <button onclick="press('8')">8</button>
+            <button onclick="press('9')">9</button>
+            <button onclick="press('/')">÷</button>
+            <button onclick="press('sqrt(')">√</button>
+            <button onclick="press('4')">4</button>
+            <button onclick="press('5')">5</button>
+            <button onclick="press('6')">6</button>
+            <button onclick="press('*')">×</button>
+            <button onclick="press('^')">xʸ</button>
+            <button onclick="press('1')">1</button>
+            <button onclick="press('2')">2</button>
+            <button onclick="press('3')">3</button>
+            <button onclick="press('-')">−</button>
+            <button onclick="press('(')">(</button>
+            <button onclick="press('0')">0</button>
+            <button onclick="press('.')">.</button>
+            <button onclick="press('+')">+</button>
+            <button onclick="press(')')">)</button>
+            <button onclick="press('pi')">π</button>
+            <button onclick="press('sin(')">sin</button>
+            <button onclick="press('cos(')">cos</button>
+            <button onclick="press('tan(')">tan</button>
+            <button onclick="press('log(')">log</button>
+            <button onclick="clearDisplay()" class="span-2">C</button>
+            <button onclick="delChar()">DEL</button>
+            <button onclick="calculate()" class="span-2">=</button>
+        </div>
+        <p id="result"></p>
+    </div>
+    <script>
+        let display = document.getElementById('display');
+        let result = document.getElementById('result');
+
+        function press(val) {
+            if (val === 'pi') {
+                display.value += Math.PI.toFixed(8);
+            } else {
+                display.value += val;
+            }
+        }
+
+        function clearDisplay() {
+            display.value = '';
+            result.innerText = '';
+        }
+
+        function delChar() {
+            display.value = display.value.slice(0, -1);
+        }
+
+        function calculate() {
+            let expr = display.value
+                .replace(/÷/g, '/')
+                .replace(/×/g, '*')
+                .replace(/(\d+)\^(\d+)/g, 'Math.pow($1,$2)')
+                .replace(/sqrt\(/g, 'Math.sqrt(')
+                .replace(/sin\(/g, 'Math.sin(')
+                .replace(/cos\(/g, 'Math.cos(')
+                .replace(/tan\(/g, 'Math.tan(')
+                .replace(/log\(/g, 'Math.log10(');
+
+            try {
+                // eslint-disable-next-line no-eval
+                let evalResult = eval(expr);
+                if (typeof evalResult === 'number' && !isNaN(evalResult) && isFinite(evalResult)) {
+                    result.innerText = "Result: " + evalResult;
+                } else {
+                    result.innerText = "Error";
+                }
+            } catch {
+                result.innerText = "Error";
+            }
+        }
+    </script>
+</body>
+</html>
